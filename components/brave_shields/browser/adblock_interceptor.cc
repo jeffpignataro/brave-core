@@ -197,6 +197,11 @@ net::URLRequestJob* AdBlockInterceptor::MaybeInterceptRequest(
   std::string header;
   if (request->extra_request_headers().GetHeader("X-Brave-Block", &header)) {
     VLOG(1) << "Intercepting request: " << request->url().spec();
+    if (header == "block") {
+      request->Cancel();
+      return nullptr;
+    }
+
     return new Http200OkJob(request, network_delegate);
   }
   return nullptr;
